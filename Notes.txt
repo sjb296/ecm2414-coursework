@@ -1,0 +1,78 @@
+Session 1:
+
+what problem does the system address?
+what will it do?
+who are the users?
+
+break up the problem into its smallest components
+decide on data structures, testing enviroment 
+
+requirements gathering and analysis
+
+Professor notes:
+can one player make as many moves as they want before all the other players? or is there a round system 
+where they have to wait for everybody to finish one take and discard
+
+if players take indefinitely they can deplete a deck, which means they would have to wait for the other player to catch up and add more cards.
+can a deck be empty?
+
+what does card do?
+
+Class PackReader -> no UI
+has a static method with one parameter to read a file and return it -> gets the directory from CardGame class
+throws an InvalidPack exception if the pack is not a plain text file, where each row contains a single non-negative integer
+value, and has 8n rows
+array list of integers (will need to be shuffled)
+
+Tests:
+Works with the right file type
+fails with the wrong file type
+file doesnt exist
+empty file
+file size != 8n
+players is int
+players is >= 2
+file has negatives
+file has decimals
+file has characters
+file has multiple numbers per line
+returns an arrayList of same size as file
+returns arrayList of type Card
+returns arrayList of size 8n
+
+
+
+
+CardGame
+user input number of players (positive integer)
+user input directory of pack, catches InvalidPack and prompts user for valid pack
+creates n players, with name of player i
+creates n decks, with name of deck i
+creates cards from pack
+distributes 4n cards, round robin to players from pack
+distributes starting from 4n in the pack the remaining cards to the decks
+would assign player.leftDeck and player.rightDeck values
+creates player threads and starts them
+listens for win event, prints to screen player x wins
+terminates program
+
+Card
+getter and setter for an integer
+
+Tests:
+
+is not negative
+
+Player
+listens for win event, logs other players win, its own exit and its final hand
+checks hand for 4 of a kind, if unanimous declare win event
+loops through cards to discard, skips preferred (its i value) cards, so it eventually goes through every card.
+logs wins, win events, draws, discards and current hand to an associated file
+if the deck is empty player idles and listens for event from the deck
+
+CardDeck
+logs final contents
+queue of cards
+if the deck was empty when it next has a card it sends an event to the other player
+
+
