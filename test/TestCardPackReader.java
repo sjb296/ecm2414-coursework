@@ -10,7 +10,15 @@ public class TestCardPackReader {
     @Test
     public void TestValidPackFile() {
         try {
-            CardPackReader.readCardPack("test/testpacks/valid_pack.txt", 4);
+            ArrayList<Card> cards = CardPackReader.readCardPack("test/testpacks/valid_pack.txt", 4);
+            int i = 0;
+            for (Card card : cards) {
+                i += 1;
+                if (i == 9) {
+                    i = 1;
+                }
+                assertEquals(i, card.getValue());
+            }
         } catch (IOException e) {
             fail("IOException should not be thrown");
         } catch (InvalidPackException e) {
@@ -18,13 +26,21 @@ public class TestCardPackReader {
         } catch (InvalidNumberOfPlayersException e) {
             fail("InvalidNumberOfPlayersException should not be thrown");
         }
-        // TODO GO THROUGH EVERY CARD CHECKING IF THE VALUE IS RIGHT
     }
 
     // test with an image
     @Test
     public void TestInvalidFileType() {
-        // TODO AWAIT EMAIL will valid files only have .txt extension?
+        try {
+            CardPackReader.readCardPack("test/testpacks/test_image.jpg",4);
+            fail("InvalidPackException should be thrown");
+        }catch (InvalidPackException e){
+            // pass
+        }catch (IOException e){
+            fail("IOException should not be thrown");
+        } catch (InvalidNumberOfPlayersException e) {
+            fail("InvalidNumberOfPlayersException should not be thrown");
+        }
     }
 
     // test with nonexistent file

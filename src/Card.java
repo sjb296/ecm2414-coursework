@@ -19,4 +19,8 @@ public class Card {
         Card.checkNonNegative(value);
         this.value = value;
     }
+
+    public String toString() {
+        return Integer.toString(value);
+    }
 }

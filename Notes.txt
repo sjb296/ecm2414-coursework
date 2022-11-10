@@ -71,8 +71,26 @@ logs wins, win events, draws, discards and current hand to an associated file
 if the deck is empty player idles and listens for event from the deck
 
 CardDeck
+input of a card and stores it in a queue
+method to return top card
 logs final contents
 queue of cards
 if the deck was empty when it next has a card it sends an event to the other player
+
+Tests:
+adding a card to the bottom of empty
+adding a card to the bottom of non-empty
+overflow adding
+
+removing a card from a deck of size 1
+remove a card from a deck upperbound
+remove a card from an empty deck
+
+outputting to a text file normal
+outputting an empty deck to a text file
+outputting lower bound
+outputting upper bound
+
+
 
 

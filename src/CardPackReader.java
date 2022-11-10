@@ -24,6 +24,9 @@ public class CardPackReader {
         }
 
         // Read the file
+        if (!filename.substring(filename.length() - 4).equals(".txt")) {
+            throw new InvalidPackException("Filetype must be .txt");
+        }
         File file = new File(filename);
         Scanner scanner = new Scanner(file);
         ArrayList<Card> cards = new ArrayList<>();
@@ -47,12 +50,4 @@ public class CardPackReader {
 
         return cards;
     }
-
-    /*
-    public static void main(String[] args) throws IOException, InvalidPackException {
-        int[] ints =  CardPackReader.readCardPack("sample_pack_1.txt");
-        System.out.println(Arrays.toString(ints));
-    }
-
-     */
 }
