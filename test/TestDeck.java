@@ -21,10 +21,25 @@ public class TestDeck {
     @Test
     public void TestAddTooManyCards() {
       Deck deck = new Deck(2, 1);
-      Card card = new Card(1);
-      deck.add(card);
+      Card card1 = new Card(1);
+      Card card2 = new Card(2);
+      Card card3 = new Card(3);
+      Card card4 = new Card(4);
+      Card card5 = new Card(5);
+      Card card6 = new Card(6);
+      Card card7 = new Card(7);
+      Card card8 = new Card(8);
+      Card card9 = new Card(9);
       try {
-        deck.add(card);
+        deck.add(card1);
+        deck.add(card2);
+        deck.add(card3);
+        deck.add(card4);
+        deck.add(card5);
+        deck.add(card6);
+        deck.add(card7);
+        deck.add(card8);
+        deck.add(card9);
         fail("IllegalStateException should be thrown");
       } catch (IllegalStateException e) {
         // pass
