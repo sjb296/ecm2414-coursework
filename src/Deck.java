@@ -9,9 +9,10 @@ public class Deck {
   ArrayBlockingQueue<Card> cardQueue;
   int number;
 
-  public Deck(int amountOfCards, int players, int number) {
+  public Deck(int players, int number) {
     // Creates an empty queue of cards
     this.number = number;
+    int amountOfCards = 8 * players;
     cardQueue = new ArrayBlockingQueue<Card>(amountOfCards - (players * 4));
   }
 

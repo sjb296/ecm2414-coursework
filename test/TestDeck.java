@@ -1,7 +1,3 @@
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.fail;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -9,11 +5,13 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class TestDeck {
     @Test
     // add card to deck
     public void TestAddCard() {
-        Deck deck = new Deck(16, 2, 1);
+        Deck deck = new Deck(2, 1);
         Card card = new Card(1);
         deck.add(card);
         assertEquals(card, deck.poll());
@@ -22,7 +20,7 @@ public class TestDeck {
     // add card to deck upper limit
     @Test
     public void TestAddTooManyCards() {
-      Deck deck = new Deck(9, 2, 1);
+      Deck deck = new Deck(2, 1);
       Card card = new Card(1);
       deck.add(card);
       try {
@@ -36,7 +34,7 @@ public class TestDeck {
     // add two cards to deck
     @Test
     public void TestAddTwoCards() {
-      Deck deck = new Deck(16, 2, 1);
+      Deck deck = new Deck(2, 1);
       Card card1 = new Card(1);
       Card card2 = new Card(2);
       deck.add(card1);
@@ -48,14 +46,14 @@ public class TestDeck {
     // remove card from empty deck
     @Test
     public void TestRemoveCardFromEmptyDeck() {
-      Deck deck = new Deck(16, 2, 1);
-      assertEquals(null, deck.poll());
+      Deck deck = new Deck(2, 1);
+        assertNull(deck.poll());
     }
 
     // remove card from deck
     @Test
     public void TestRemoveCardFromDeck() {
-      Deck deck = new Deck(16, 2, 1);
+      Deck deck = new Deck(2, 1);
       Card card = new Card(1);
       deck.add(card);
       assertEquals(card, deck.poll());
@@ -65,7 +63,7 @@ public class TestDeck {
     // remove two cards from deck
     @Test
     public void TestRemoveTwoCardsFromDeck() {
-      Deck deck = new Deck(16, 2, 1);
+      Deck deck = new Deck(2, 1);
       Card card1 = new Card(1);
       Card card2 = new Card(2);
       deck.add(card1);
@@ -78,7 +76,7 @@ public class TestDeck {
     // remove card from deck upper limit
     @Test
     public void TestRemoveTooManyCards() {
-      Deck deck = new Deck(16, 2, 1);
+      Deck deck = new Deck(2, 1);
       Card card1 = new Card(1);
       Card card2 = new Card(2);
       deck.add(card1);
@@ -91,7 +89,7 @@ public class TestDeck {
     // output deck to a file
     @Test
     public void TestOutputDeckToFile() throws IOException {
-      Deck deck = new Deck(16, 2, 1);
+      Deck deck = new Deck(2, 1);
       Card card1 = new Card(1);
       deck.add(card1);
       deck.writeToFile();
@@ -111,7 +109,7 @@ public class TestDeck {
     // output an empty deck to a file
     @Test
     public void TestOutputEmptyDeckToFile() throws IOException {
-      Deck deck = new Deck(16, 2, 1);
+      Deck deck = new Deck(2, 1);
       deck.writeToFile();
       BufferedReader br = new BufferedReader(new FileReader("deck1_output.txt"));
       String contents;
@@ -129,7 +127,7 @@ public class TestDeck {
     // output a full deck to a file
     @Test
     public void TestOutputFullDeckToFile() throws IOException {
-      Deck deck = new Deck(16, 2, 1);
+      Deck deck = new Deck(2, 1);
       Card card1 = new Card(1);
       for (int i = 0; i < 8; i++) {
         deck.add(card1);
