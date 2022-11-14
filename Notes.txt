@@ -70,6 +70,34 @@ loops through cards to discard, skips preferred (its i value) cards, so it event
 logs wins, win events, draws, discards and current hand to an associated file
 if the deck is empty player idles and listens for event from the deck
 
+Listen for win event from game
+Log win event or other players win event, exit and final hand
+Loop -> starts with checking hand
+then trys to draw and discard from left deck to right deck
+then repeats until win event (from checking or listening)
+Hand is an array size 4
+held card for cache in draw and discard
+the card that is discarded must looped over
+
+Tests:
+draw and discard from normal deck ends in hand
+draw and discard from normal deck ends in right deck
+2 draw and discards
+5 draw and discards
+draw and discard empty deck
+draw and discard from upper bound deck
+
+Mock starting hand with x111, run 10 cycles and see if any 1 is ever discarded.
+Starting hand is all 1111
+Send external win event to player, check if it logs it
+Send internal win event to player, check if it logs it
+check if on exit the thread is alive
+
+
+
+
+
+
 CardDeck
 input of a card and stores it in a queue
 method to return top card
