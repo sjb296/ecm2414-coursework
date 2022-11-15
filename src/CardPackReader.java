@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class CardPackReader {
     /**
      * Reads a card pack from a file.
+     *
      * @param filename The name of the pack file.
      * @return A cards of integers of the cards in the pack file.
      * @throws IOException

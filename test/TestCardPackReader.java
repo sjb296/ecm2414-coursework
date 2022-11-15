@@ -32,11 +32,11 @@ public class TestCardPackReader {
     @Test
     public void TestInvalidFileType() {
         try {
-            CardPackReader.readCardPack("test/testpacks/test_image.jpg",4);
+            CardPackReader.readCardPack("test/testpacks/test_image.jpg", 4);
             fail("InvalidPackException should be thrown");
-        }catch (InvalidPackException e){
+        } catch (InvalidPackException e) {
             // pass
-        }catch (IOException e){
+        } catch (IOException e) {
             fail("IOException should not be thrown");
         } catch (InvalidNumberOfPlayersException e) {
             fail("InvalidNumberOfPlayersException should not be thrown");
