@@ -46,15 +46,36 @@ returns arrayList of size 8n
 CardGame
 user input number of players (positive integer)
 user input directory of pack, catches InvalidPack and prompts user for valid pack
-creates n players, with name of player i
+creates n players, with name of player i and n threads for each player
 creates n decks, with name of deck i
 creates cards from pack
-distributes 4n cards, round robin to players from pack
+distributes 4n cards, round robin to players from pack (player takes array, deck adds one by one)
 distributes starting from 4n in the pack the remaining cards to the decks
 would assign player.leftDeck and player.rightDeck values
-creates player threads and starts them
-listens for win event, prints to screen player x wins
+starts threads
 terminates program
+
+Tests:
+user input number of players (positive integer 4)
+input number is negative
+input number is 0
+input number is 1
+input number is 2 (lower bound)
+valid directory
+invalid directory
+valid directory, but invalid pack
+check n players created
+try to start all threads to see if all are created
+check n decks created
+check 8n cards created
+check card values match with the pack
+check cards distributed to players round robin
+check remaining cards distributed to decks
+check cards distributed round robin to decks
+check all players left decks are another players right deck
+check player has a different right and left deck
+check no 2 players have the same right or left deck
+check in possible game theres a win
 
 Card
 getter and setter for an integer

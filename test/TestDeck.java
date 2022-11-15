@@ -134,4 +134,32 @@ public class TestDeck {
         String contents = OutputFileHelper.readOutputFile("deck1");
         assertEquals("deck1 contents: 1 1 1 1 1 1 1 1", contents);
     }
+
+    // Peek value is same as poll value
+    @Test
+    public void TestPeek() {
+        Deck deck = new Deck(2, 1);
+        Card card1 = new Card(1);
+        deck.add(card1);
+        assertEquals(card1, deck.peek());
+        assertEquals(card1, deck.poll());
+    }
+
+    // check if empty deck is full
+    @Test
+    public void TestEmptyDeckIsFull() {
+        Deck deck = new Deck(2, 1);
+        assertFalse(deck.isFull());
+    }
+
+    // check if full deck is full
+    @Test
+    public void TestFullDeckIsFull() {
+        Deck deck = new Deck(2, 1);
+        Card card1 = new Card(1);
+        for (int i = 0; i < 8; i++) {
+            deck.add(card1);
+        }
+        assertTrue(deck.isFull());
+    }
 }

@@ -1,6 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import org.junit.Test;
 
 import static java.lang.Thread.sleep;
@@ -66,13 +66,13 @@ public class TestPlayer {
     @Test
     public void TestDrawDiscardFiveNonPreferred() {
         // give player starting hand
-        Deck left = new Deck(1, 1);
+        Deck left = new Deck(2, 1);
         left.add(new Card(2));
         left.add(new Card(3));
         left.add(new Card(4));
         left.add(new Card(5));
         left.add(new Card(6));
-        Deck right = new Deck(1, 2);
+        Deck right = new Deck(2, 2);
         Card[] startingHand = {
                 new Card(7),
                 new Card(8),
@@ -127,15 +127,11 @@ public class TestPlayer {
         right.add(new Card(2));
         right.add(new Card(3));
         right.add(new Card(4));
-        right.add(new Card(5));
-        right.add(new Card(6));
-        right.add(new Card(7));
-        right.add(new Card(8));
         Player p1 = new Player(left, right, startingHand, 1, new ArrayList<Player>());
         // draw & discard
         try {
             p1.drawDiscard();
-            fail("IllegalStateException should be thrown!");
+            assertEquals(9, left.peek().getValue());
         } catch (IllegalStateException e) {
             //pass
         }
@@ -147,33 +143,28 @@ public class TestPlayer {
         Card[] startingHand = {new Card(2), new Card(1), new Card(1), new Card(1)};
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
-        // 10 cards for 10 cycles
-        left.add(new Card(2));
+        // 4 cards for 4 cycles
         left.add(new Card(3));
         left.add(new Card(4));
         left.add(new Card(5));
         left.add(new Card(6));
-        left.add(new Card(7));
-        left.add(new Card(8));
-        left.add(new Card(9));
-        left.add(new Card(10));
-        left.add(new Card(11));
         Player p1 = new Player(left, right, startingHand, 1, new ArrayList<Player>());
         // draw and discard
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 4; i++) {
             p1.drawDiscard();
         }
-        assert (p1.getHand()[0].getValue() == 11);
+
+        assert (p1.getHand()[0].getValue() == 6);
         assert (p1.getHand()[1].getValue() == 1);
         assert (p1.getHand()[2].getValue() == 1);
         assert (p1.getHand()[3].getValue() == 1);
         assert (left.poll() == null);
-        assert (right.length() == 10);
+        assert (right.length() == 4);
     }
 
     // Starting hand is a win
     @Test
-    public void TestStartWinningHand() throws IOException, InterruptedException {
+    public void TestStartWinningHand() throws InterruptedException {
         Card[] startingHand = {new Card(1), new Card(1), new Card(1), new Card(1)};
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
@@ -189,12 +180,12 @@ public class TestPlayer {
 
     // External win event
     @Test
-    public void TestExternalWinEvent() throws InterruptedException, IOException {
+    public void TestExternalWinEvent() throws InterruptedException {
         Card[] startingHand = {new Card(1), new Card(2), new Card(3), new Card(4)};
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
         Player p1 = new Player(left, right, startingHand, 1, new ArrayList<Player>());
-        Player p2 = new Player(null, null, null, 2, new ArrayList<Player>());
+        Player p2 = new Player(null, null, new Card[]{new Card(0), new Card(0), new Card(0), new Card(0)}, 2, new ArrayList<Player>());
 
         p1.addOtherPlayer(p2);
         p2.win();
@@ -229,7 +220,7 @@ public class TestPlayer {
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
         Player p1 = new Player(left, right, startingHand, 1, new ArrayList<Player>());
-        Player p2 = new Player(null, null, null, 2, new ArrayList<Player>());
+        Player p2 = new Player(null, null, new Card[]{new Card(0), new Card(0), new Card(0), new Card(0)}, 2, new ArrayList<Player>());
 
         p1.addOtherPlayer(p2);
         p2.win();
@@ -241,7 +232,7 @@ public class TestPlayer {
 
         String contents = OutputFileHelper.readOutputFile("player1");
         assertEquals(("player 1 initial hand 1 2 3 4\n" +
-                        "player 2 wins\n" +
+                        "player 2 has informed player 1 that player 2 has won\n" +
                         "player 1 exits\n" +
                         "player 1 final hand 1 2 3 4"),
                 contents);
@@ -260,6 +251,6 @@ public class TestPlayer {
         p1Thread.join();
 
         // test it logs the right thing
-        assertEquals(OutputFileHelper.readOutputFile("player1"), "player 1 initial hand 1 1 1 2\nplayer 1 draws a 1 from deck 1\nplayer 1 discards a 2 to deck 2\nplayer 1 current hand: 1 1 1 1\nplayer 1 wins\nplayer 1 exits\nplayer 1 final hand 1 1 1 1");
+        assertEquals("player 1 initial hand 1 1 1 2\nplayer 1 draws a 1 from deck 1\nplayer 1 discards a 2 to deck 2\nplayer 1 current hand is 1 1 1 1\nplayer 1 wins\nplayer 1 exits\nplayer 1 final hand 1 1 1 1", OutputFileHelper.readOutputFile("player1"));
     }
 }

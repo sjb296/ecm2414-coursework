@@ -39,4 +39,12 @@ public class Deck {
     public int length() {
         return cardQueue.size();
     }
+
+    public Card peek() {
+        return cardQueue.peek();
+    }
+
+    public boolean isFull() {
+        return cardQueue.remainingCapacity() == 0;
+    }
 }
