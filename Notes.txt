@@ -78,6 +78,7 @@ then repeats until win event (from checking or listening)
 Hand is an array size 4
 held card for cache in draw and discard
 the card that is discarded must looped over
+after draw and discard log timestamp and hand as a tuple to an arrayList
 
 Tests:
 draw and discard from normal deck ends in hand
@@ -92,11 +93,9 @@ Starting hand is all 1111
 Send external win event to player, check if it logs it
 Send internal win event to player, check if it logs it
 check if on exit the thread is alive
-
-
-
-
-
+check timestamp log is correct for 1 cycle
+check timestamp log is correct for 3 cycles
+check hand is reverted to hand before win event
 
 CardDeck
 input of a card and stores it in a queue
@@ -120,5 +119,17 @@ outputting lower bound
 outputting upper bound
 
 
+Win handler
+needs a list of all players
+takes the time of the win event
+sends win event to all players, takes winning player as a parameter and win time
+run by winning player
 
 
+player 4 draws and discards then has winning hand call winhandler
+winhandler will tell all the players player 4 has won
+in this time player 1 has draw and discarded twice
+player 2 has draw and discarded once
+and player 3 has done nothing
+when player 1 and player 2 print their output file it will have the wrong final hand
+player 3 and 4 will have the correct one

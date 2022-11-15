@@ -1,5 +1,12 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Date;
 import org.junit.Test;
 
+import static java.lang.Thread.sleep;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class TestPlayer {
@@ -134,5 +141,169 @@ public class TestPlayer {
         } catch (IllegalStateException e) {
             //pass
         }
+    }
+
+    // Test to see if prioritised cards are ever discarded
+    @Test
+    public void TestKeepPrioritisedCard(){
+        Card[] startingHand = {new Card(2), new Card(1), new Card(1), new Card(1)};
+        Deck right = new Deck(1, 2);
+        Deck left = new Deck(1, 1);
+        // 10 cards for 10 cycles
+        left.add(new Card(2));
+        left.add(new Card(3));
+        left.add(new Card(4));
+        left.add(new Card(5));
+        left.add(new Card(6));
+        left.add(new Card(7));
+        left.add(new Card(8));
+        left.add(new Card(9));
+        left.add(new Card(10));
+        left.add(new Card(11));
+        Player p1 = new Player(left, right, startingHand, 1);
+        // draw and discard
+        for(int i=0; i<11; i++){
+            p1.drawDiscard();
+        }
+        assert(p1.getHand()[0].getValue() == 11);
+        assert(p1.getHand()[1].getValue() == 1);
+        assert(p1.getHand()[2].getValue() == 1);
+        assert(p1.getHand()[3].getValue() == 1);
+        assert(left.poll() == null);
+        assert(right.length() == 10);
+    }
+
+    // Starting hand is a win
+    @Test
+    public void TestStartWinningHand() throws IOException {
+        Card[] startingHand = {new Card(1), new Card(1), new Card(1), new Card(1)};
+        Deck right = new Deck(1, 2);
+        Deck left = new Deck(1, 1);
+        Player p1 = new Player(left, right, startingHand, 1);
+        if(p1.hasWon()){
+            //pass
+        }else {
+            fail("Player 1 should have won!");
+        }
+        BufferedReader br = new BufferedReader(new FileReader("player1_output.txt"));
+        String contents = "";
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = "";
+            for(int i=0; i<4; i++){
+                line = br.readLine();
+                sb.append(line);
+            }
+            contents = sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            br.close();
+        }
+        assertEquals("player 1 initial hand 1 1 1 1\nplayer 1 wins\nplayer 1 exits\nplayer 1 final hand 1 1 1 1", contents);
+    }
+
+    // External win event
+    @Test
+    public void TestExternalWinEvent() throws InterruptedException, IOException {
+        Card[] startingHand = {new Card(1), new Card(2), new Card(3), new Card(4)};
+        Deck right = new Deck(1, 2);
+        Deck left = new Deck(1, 1);
+        Thread p1 = new Thread(new Player(left, right, startingHand, 1));
+        WinHandler winHandler;
+        winHandler.sendWinEvent(2);
+        sleep(100);
+        if(p1.isAlive()){
+            fail("Thread should be killed!");
+        }
+        BufferedReader br = new BufferedReader(new FileReader("player1_output.txt"));
+        String contents = "";
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = "";
+            for(int i=0; i<4; i++){
+                line = br.readLine();
+                sb.append(line);
+            }
+            contents = sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            br.close();
+        }
+        assertEquals("player 1 initial hand 1 2 3 4\nplayer 2 wins\nplayer 1 exits\nplayer 1 final hand 1 2 3 4", contents);
+    }
+
+    // Check hand is logged with a timestamp
+    @Test
+    public void TestHandIsLogged(){
+        // give player starting hand
+        Deck left = new Deck(1, 1);
+        left.add(new Card(3));
+        Deck right = new Deck(1, 2);
+        Card[] startingHand = {new Card(2), new Card(2), new Card(2), new Card(2)};
+        Player p1 = new Player(left, right, startingHand, 1);
+        // draw & discard
+        p1.drawDiscard();
+
+        assert(left.poll() == null);
+        assert(right.poll().getValue() == 2);
+        assert(p1.getHand()[0].getValue() == 3);
+        assert(p1.getLog[1][0] == new Card[]{new Card(3), new Card(2), new Card(2), new Card(2)});
+        assert(p1.getLog[1][1] instanceof Date);
+    }
+
+    // Check hand is logged with a timestamp
+    @Test
+    public void TestHandIsLogged3Cycles(){
+        // give player starting hand
+        Deck left = new Deck(1, 1);
+        left.add(new Card(3));
+        left.add(new Card(4));
+        left.add(new Card(5));
+        Deck right = new Deck(1, 2);
+        Card[] startingHand = {new Card(2), new Card(2), new Card(2), new Card(2)};
+        Player p1 = new Player(left, right, startingHand, 1);
+        // draw & discard
+        for(int i=0; i<3; i++){
+            p1.drawDiscard();
+        }
+
+        assert(left.poll() == null);
+        assert(right.poll().getValue() == 2);
+        assert(p1.getHand()[0].getValue() == 3);
+        assert(p1.getLog[1][0] == new Card[]{new Card(3), new Card(2), new Card(2), new Card(2)});
+        assert(p1.getLog[2][0] == new Card[]{new Card(3), new Card(4), new Card(2), new Card(2)});
+        assert(p1.getLog[3][0] == new Card[]{new Card(3), new Card(4), new Card(5), new Card(2)});
+        for(int i=0; i<3; i++){
+            assert(p1.getLog[i][1] instanceof Date);
+        }
+    }
+
+    // Hand is reverted to last hand before win event
+    @Test
+    public void TestHandIsReverted(){
+        // give player starting hand
+        Deck left = new Deck(16, 1);
+        for(int i=0; i<64; i++){
+            left.add(new Card(i));
+        }
+        Deck right = new Deck(1, 2);
+        Card[] startingHand = {new Card(2), new Card(2), new Card(2), new Card(2)};
+        Player p1 = new Player(left, right, startingHand, 1);
+        // draw & discard
+        p1.drawDiscard();
+        // win event
+        WinHandler.sendWinEvent(2);
+        // simulated game loop
+        //TODO might need to go on a thread for the loop to stop
+        for(int i=0; i<63; i++){
+            p1.drawDiscard();
+        }
+        // check hand is reverted
+        assert(p1.getHand()[0].getValue() == 3);
+        assert(p1.getHand()[1].getValue() == 4);
+        assert(p1.getHand()[2].getValue() == 5);
+        assert(p1.getHand()[3].getValue() == 2);
     }
 }

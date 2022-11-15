@@ -35,4 +35,8 @@ public class Deck {
     out.close();
 
   }
+
+  public int length() {
+    return cardQueue.size();
+  }
 }
