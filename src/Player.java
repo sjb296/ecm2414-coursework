@@ -13,7 +13,7 @@ public class Player implements Runnable {
     private int discardIndex = 0;
     private boolean victory = false;
     private String log = "";
-    private ArrayList<Player> otherPlayers;
+    private ArrayList<Player> otherPlayers = new ArrayList<>();
 
     public Deck getLeftDeck() {
         return leftDeck;
@@ -48,18 +48,16 @@ public class Player implements Runnable {
         return this.victory;
     }
 
-    public void addOtherPlayer(Player player) {
-        otherPlayers.add(player);
+    public void setOtherPlayers(ArrayList<Player> otherPlayers) {
+        this.otherPlayers= otherPlayers;
     }
 
-    public Player(Deck leftDeck, Deck rightDeck, Card[] hand, int number,
-                  ArrayList<Player> otherPlayers) {
+    public Player(Deck leftDeck, Deck rightDeck, Card[] hand, int number) {
         this.leftDeck = leftDeck;
         this.rightDeck = rightDeck;
         this.hand = hand;
         this.number = number;
         this.log = "player " + this.number + " initial hand " + hand[0].getValue() + " " + hand[1].getValue() + " " + hand[2].getValue() + " " + hand[3].getValue() + "\n";
-        this.otherPlayers = otherPlayers;
     }
 
     public void writeOutputFile() throws FileNotFoundException, UnsupportedEncodingException {
@@ -108,6 +106,7 @@ public class Player implements Runnable {
         if (this.hand[0].getValue() == this.hand[1].getValue() &&
                 this.hand[1].getValue() == this.hand[2].getValue() &&
                 this.hand[2].getValue() == this.hand[3].getValue()) {
+            this.win();
             return true;
         } else {
             return false;

@@ -28,6 +28,10 @@ public class Deck {
         return cardQueue.poll();
     }
 
+    public String toString() {
+        return "Deck " + this.number;
+    }
+
     public void writeToFile() throws FileNotFoundException, UnsupportedEncodingException {
         String output = "deck" + number + " contents: " + cardQueue.toString()
                 .replace("[", "")

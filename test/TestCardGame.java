@@ -1,6 +1,8 @@
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -18,7 +20,7 @@ public class TestCardGame {
 
     // players get the right number according to creation order
     @Test
-    public void TestPlayersGivenRightNumber() throws InvalidPackException, InvalidNumberOfPlayersException {
+    public void TestPlayersGivenRightNumber() throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame game = new CardGame(4, "test/testpacks/valid_pack.txt");
         game.setupGame();
 
@@ -74,7 +76,7 @@ public class TestCardGame {
     // user inputs valid directory
     @Test
     public void TestValidDirectory()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
     }
@@ -89,6 +91,8 @@ public class TestCardGame {
             fail("InvalidPackException should have been thrown!");
         } catch (InvalidPackException e) {
             // pass
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -102,13 +106,15 @@ public class TestCardGame {
             fail("InvalidPackException should have been thrown!");
         } catch (InvalidPackException e) {
             // pass
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     // n players are created
     @Test
     public void TestNumberOfPlayersCreated()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
         assertEquals(4, cardGame.getPlayers().size());
@@ -117,30 +123,16 @@ public class TestCardGame {
     // n threads created
     @Test
     public void TestNumberOfThreadsCreated()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
         assertEquals(4, cardGame.getPlayerThreads().size());
     }
 
-    // test threads all start on unwinnable game
-    @Test
-    public void TestAllThreadsStart() throws InvalidPackException, InvalidNumberOfPlayersException {
-        CardGame cardGame = new CardGame(4, "test/testpacks/unwinnable_game.txt");
-        cardGame.setupGame();
-        cardGame.playGame();
-        // Check they're all alive
-        for (Thread thread : cardGame.getPlayerThreads()) {
-            assert(thread.isAlive());
-        }
-        // kill them all by faking a winner
-        cardGame.getPlayers().get(0).win();
-    }
-
     // n decks created
     @Test
     public void TestNumberOfDecksCreated()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
         assertEquals(4, cardGame.getDecks().size());
@@ -148,7 +140,7 @@ public class TestCardGame {
 
     // decks given the right number by creation order
     @Test
-    public void TestDecksGivenRightNumber() throws InvalidPackException, InvalidNumberOfPlayersException {
+    public void TestDecksGivenRightNumber() throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
         for (int i=0;i<4;i++) {
@@ -159,7 +151,7 @@ public class TestCardGame {
     // 8n cards created
     @Test
     public void Test8nCardsCreatedTotal()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         int cards = 0;
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
@@ -181,7 +173,7 @@ public class TestCardGame {
     // card values match values in the pack
     @Test
     public void TestCardValuesMatchPack()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(2, "test/testpacks/valid_pack_2p.txt");
         cardGame.setupGame();
 
@@ -189,28 +181,32 @@ public class TestCardGame {
 
         // merge hands then decks into one "pack" array
 
+        System.out.println(Arrays.toString(cardGame.getPlayers().get(0).getHand()));
+        System.out.println(Arrays.toString(cardGame.getPlayers().get(1).getHand()));
         // index incrementing, start at 0, take 1 from each player THEN increment
-        for (int i=0;i<4;i++) {
-            pack[i] = cardGame.getPlayers().get(0).getHand()[i];
-            pack[i] = cardGame.getPlayers().get(1).getHand()[i];
+        int j = 0;
+        for (int i=0;i<8;i+=2) {
+            pack[i]   = cardGame.getPlayers().get(0).getHand()[j%4];
+            pack[i+1] = cardGame.getPlayers().get(1).getHand()[j%4];
+            j++;
         }
 
         // then do same for decks
-        for (int i=0;i<4;i++) {
-            pack[15 - i] = cardGame.getDecks().get(1).poll();
-            pack[15 - i] = cardGame.getDecks().get(0).poll();
+        for (int i=8;i<16;i+=2) {
+            pack[i]   = cardGame.getDecks().get(0).poll();
+            pack[i+1] = cardGame.getDecks().get(1).poll();
         }
 
         // assert contents of pack match contents of file
-        for (int i=1;i<17;i++) {
-            assertEquals(i%9, pack[i].getValue());
+        for (int i=0;i<16;i++) {
+            assertEquals((i%8)+1, pack[i].getValue());
         }
     }
 
     // 4n cards distributed to players
     @Test
     public void Test4nCardsDistributedToPlayers()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
 
@@ -227,7 +223,7 @@ public class TestCardGame {
     // cards distributed round robin to players
     @Test
     public void TestCardsDistributedRoundRobinPlayers()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
 
@@ -235,8 +231,10 @@ public class TestCardGame {
         for (int i=0;i<4;i++) {
             Card[] actualHand = cardGame.getPlayers().get(i).getHand();
             // Their hand should be this e.g. [1,5,1,5] in valid_pack.txt for player 1
-            Card[] expectedHand = new Card[]{new Card(i+1), new Card(i+5),
-                    new Card(i+9), new Card(i+13)};
+            Card[] expectedHand = new Card[]{
+                    new Card(i+1), new Card(i+5),
+                    new Card(i+1), new Card(i+5)
+            };
 
             // Compare expected and actual hands elementwise
             for (int j=0;j<4;j++) {
@@ -247,7 +245,7 @@ public class TestCardGame {
 
     // cards from index of 4n onwards are distributed to decks
     @Test
-    public void TestCards4nOnwardsDistributedToDecks() throws InvalidPackException, InvalidNumberOfPlayersException {
+    public void TestCards4nOnwardsDistributedToDecks() throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(2, "test/testpacks/nonrepeating_pack.txt");
         cardGame.setupGame();
 
@@ -263,7 +261,7 @@ public class TestCardGame {
     // 4n cards are distributed to decks
     @Test
     public void Test4nCardsDistributedToDecks()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
 
@@ -280,15 +278,22 @@ public class TestCardGame {
     // cards distributed round robin to decks
     @Test
     public void TestCardsDistributedRoundRobinDecks()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
 
         // Loop through decks
         for (int i=0;i<4;i++) {
             Deck deck = cardGame.getDecks().get(i);
+            // cards are i+j+1, i+j+4, i+j+1, i+j+4
+            int k;
             for (int j=0;j<4;j++) {
-                assertEquals(deck.poll().getValue(), (i + 1) + (j * 4));
+                if ((j%2) == 0) {
+                    k = 1;
+                } else {
+                    k = 4;
+                }
+                assertEquals(i + (j % 2) + k, deck.poll().getValue());
             }
         }
     }
@@ -296,7 +301,7 @@ public class TestCardGame {
     // all players are assigned a left deck
     @Test
     public void TestAllPlayersAssignedLeftDeck()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
 
@@ -308,7 +313,7 @@ public class TestCardGame {
     // all players are assigned a right deck
     @Test
     public void TestAllPlayersAssignedRightDeck()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
 
@@ -322,7 +327,7 @@ public class TestCardGame {
     // no two players can have the same right deck
     @Test
     public void TestCorrectGameTopology()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
 
@@ -337,8 +342,9 @@ public class TestCardGame {
         for (Player player : cardGame.getPlayers()) {
             decksRightwards.add(player.getRightDeck());
         }
-        // they must be the reverse of each other (compare elementwise)
-        Collections.reverse(decksRightwards);
+
+        // The rightwards decks will be the leftwards but with the first element at the end
+        decksLeftwards.add(decksLeftwards.remove(0));
 
         for (int i=0;i<decksLeftwards.size();i++) {
             assertEquals(decksLeftwards.get(i), decksRightwards.get(i));
@@ -348,7 +354,7 @@ public class TestCardGame {
     // each player's left deck can't be the same as their right deck
     @Test
     public void TestPlayersLeftAndRightDecksAreDifferent()
-            throws InvalidPackException, InvalidNumberOfPlayersException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, IOException {
         CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
         cardGame.setupGame();
 
@@ -360,7 +366,7 @@ public class TestCardGame {
     // game with a possible ending, has a winner
     @Test
     public void TestWinnableGameHasWinner()
-            throws InvalidPackException, InvalidNumberOfPlayersException, InterruptedException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, InterruptedException, IOException {
         CardGame cardGame = new CardGame(2, "test/testpacks/p1_wins_in_1_turn.txt");
         cardGame.setupGame();
         cardGame.playGame();
@@ -373,7 +379,7 @@ public class TestCardGame {
     // game with initial winning hand, has a winner
     @Test
     public void TestInitialWinningHandPlayerWins()
-            throws InvalidPackException, InvalidNumberOfPlayersException, InterruptedException {
+            throws InvalidPackException, InvalidNumberOfPlayersException, InterruptedException, IOException {
         CardGame cardGame = new CardGame(2, "test/testpacks/pack_of_ones.txt");
         cardGame.setupGame();
         cardGame.playGame();
