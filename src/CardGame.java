@@ -108,6 +108,13 @@ public class CardGame {
         }
     }
 
+    /**
+     * Constructor.
+     *
+     * @param numberOfPlayers
+     * @param packFileName
+     * @throws InvalidNumberOfPlayersException
+     */
     public CardGame(int numberOfPlayers, String packFileName)
             throws InvalidNumberOfPlayersException {
         if (numberOfPlayers > 1) {
@@ -122,7 +129,7 @@ public class CardGame {
     }
 
     /**
-     * Validates the number of players is 2 or more and integer
+     * Validates the number of players is 2 or more and integer.
      *
      * @param playersAsString
      * @return players or -1
@@ -140,7 +147,7 @@ public class CardGame {
     }
 
     /**
-     * Validates the directory
+     * Validates the directory.
      *
      * @param directory
      * @param players

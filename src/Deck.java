@@ -7,6 +7,12 @@ public class Deck {
     ArrayBlockingQueue<Card> cardQueue;
     int number;
 
+    /**
+     * Constructor.
+     *
+     * @param players
+     * @param number
+     */
     public Deck(int players, int number) {
         // Creates an empty queue of cards
         this.number = number;
@@ -30,6 +36,12 @@ public class Deck {
         return "Deck " + this.number;
     }
 
+    /**
+     * Writes output file.
+     *
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
     public void writeToFile() throws FileNotFoundException, UnsupportedEncodingException {
         String output = "deck" + number + " contents: " + cardQueue.toString()
                 .replace("[", "")
