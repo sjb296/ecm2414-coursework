@@ -1,5 +1,10 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class CardGame {
     private int numberOfPlayers;
@@ -107,5 +112,67 @@ public class CardGame {
         this.playerThreads = new ArrayList<Thread>();
         this.decks = new ArrayList<Deck>();
         this.packFileName = packFileName;
+    }
+
+    // Validates the number of players is 2 or more and integer
+    public static int ValidateNumberOfPlayers(String playersAsString){
+        try {
+            int players = Integer.parseInt(playersAsString);
+            if (players > 1) {
+                return players;
+            }
+        } catch (NumberFormatException e) {
+            //pass
+        }
+        return -1;
+    }
+
+    // Validates the directory
+    public static boolean ValidateDirectory(String directory, int players){
+        if (directory != null) {
+            try {
+                CardPackReader.readCardPack(directory, players);
+                return true;
+            } catch (InvalidPackException | InvalidNumberOfPlayersException | IOException e) {
+                //pass
+            }
+        }
+        return false;
+    }
+
+    // Input verification loop for number of players
+    public static int UserInputPlayers() throws IOException {
+        int players = -1;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String playersAsString = "";
+        while (players == -1) {
+            System.out.println("Please enter the number of players:");
+            playersAsString = reader.readLine();
+            players = ValidateNumberOfPlayers(playersAsString);
+        }
+        return players;
+    }
+
+    // Input verification for directory
+    public static String UserInputDirectory(int players) throws IOException {
+        String directory = "";
+        boolean validDirectory = false;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        while (!validDirectory) {
+            System.out.println("Please enter location of pack to load:");
+            directory = reader.readLine();
+            validDirectory = ValidateDirectory(directory,players);
+        }
+        return directory;
+    }
+
+    // Main
+    public static void main(String[] args)
+            throws IOException, InvalidPackException, InvalidNumberOfPlayersException {
+        int players = CardGame.UserInputPlayers();
+        String directory = CardGame.UserInputDirectory(players);
+        CardGame cardGame = new CardGame(players, directory);
+        cardGame.setupGame();
+        cardGame.playGame();
     }
 }

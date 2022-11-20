@@ -1,12 +1,9 @@
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.junit.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
-import static java.lang.Thread.sleep;
 import static org.junit.Assert.*;
 
 public class TestCardGame {
@@ -85,14 +82,14 @@ public class TestCardGame {
     @Test
     public void TestInvalidDirectory()
             throws InvalidNumberOfPlayersException, InvalidPackException {
-        CardGame cardGame = new CardGame(4, "test/testpacks/valid_pack.txt");
+        CardGame cardGame = new CardGame(4, "invalidDirectory.txt");
         try {
             cardGame.setupGame();
             fail("InvalidPackException should have been thrown!");
         } catch (InvalidPackException e) {
             // pass
         } catch (IOException e) {
-            e.printStackTrace();
+            // pass
         }
     }
 
@@ -180,9 +177,6 @@ public class TestCardGame {
         Card[] pack = new Card[16];
 
         // merge hands then decks into one "pack" array
-
-        System.out.println(Arrays.toString(cardGame.getPlayers().get(0).getHand()));
-        System.out.println(Arrays.toString(cardGame.getPlayers().get(1).getHand()));
         // index incrementing, start at 0, take 1 from each player THEN increment
         int j = 0;
         for (int i=0;i<8;i+=2) {
@@ -363,28 +357,203 @@ public class TestCardGame {
         }
     }
 
-    // game with a possible ending, has a winner
+    // Game with a possible ending, has a winner
     @Test
     public void TestWinnableGameHasWinner()
             throws InvalidPackException, InvalidNumberOfPlayersException, InterruptedException, IOException {
+        // Sets up and plays game
         CardGame cardGame = new CardGame(2, "test/testpacks/p1_wins_in_1_turn.txt");
         cardGame.setupGame();
         cardGame.playGame();
 
-        sleep(200);
+        // Join all threads
+        for (Thread thread : cardGame.getPlayerThreads()) {
+            thread.join();
+        }
+        // Assert player 1 has won
         assert(cardGame.getPlayers().get(0).hasWon());
     }
 
 
-    // game with initial winning hand, has a winner
+    // Game with initial winning hand, has a winner
     @Test
     public void TestInitialWinningHandPlayerWins()
             throws InvalidPackException, InvalidNumberOfPlayersException, InterruptedException, IOException {
+        // Setup game and play
         CardGame cardGame = new CardGame(2, "test/testpacks/pack_of_ones.txt");
         cardGame.setupGame();
         cardGame.playGame();
 
-        sleep(200);
+        // Join all threads
+        for (Thread thread : cardGame.getPlayerThreads()) {
+            thread.join();
+        }
         assert(cardGame.getPlayers().get(0).hasWon());
+    }
+
+    // Player replaces entire hand
+    @Test
+    public void TestPlayerReplacesEntireHand()
+            throws InvalidPackException, InvalidNumberOfPlayersException, InterruptedException, IOException {
+        // Setup game and play
+        CardGame cardGame = new CardGame(2, "test/testpacks/replaces_full_hand_pack.txt");
+        cardGame.setupGame();
+        cardGame.playGame();
+
+        // Join all threads
+        for (Thread thread : cardGame.getPlayerThreads()) {
+            thread.join();
+        }
+
+        // Checks player 1 has won with a final hand of 1 1 1 1
+        Player player1 = cardGame.getPlayers().get(0);
+        assert(player1.hasWon());
+        for (Card card : player1.getHand()) {
+            assertEquals(1, card.getValue());
+        }
+    }
+
+    // Upper bound player wins (4)
+    @Test
+    public void TestUpperboundPlayerWins()
+            throws InvalidPackException, InvalidNumberOfPlayersException, InterruptedException, IOException {
+        // Sets up and plays game
+        CardGame cardGame = new CardGame(4, "test/testpacks/p4_wins.txt");
+        cardGame.setupGame();
+        cardGame.playGame();
+
+        // Join all threads
+        for (Thread thread : cardGame.getPlayerThreads()) {
+            thread.join();
+        }
+        // Assert player 1 has won
+        assert(cardGame.getPlayers().get(3).hasWon());
+    }
+
+    // Lots of players (32)
+    @Test
+    public void Test32Players()
+            throws InvalidPackException, InvalidNumberOfPlayersException, InterruptedException, IOException {
+        // Setup game and play
+        CardGame cardGame = new CardGame(32, "test/testpacks/32_players.txt");
+        cardGame.setupGame();
+        cardGame.playGame();
+
+        // Join all threads
+        for (Thread thread : cardGame.getPlayerThreads()) {
+            thread.join();
+        }
+
+        // Checks a player has won
+        boolean someoneHasWon = false;
+        for (int i=1; i<9; i++){
+            Player player = cardGame.getPlayers().get(i);
+            if(player.hasWon()){
+                return;
+            }
+        }
+        fail("No players have won a winnable game");
+    }
+
+    // User inputs valid number of players
+    @Test
+    public void TestValidNumberOfPlayersInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        // Fake input stream
+        InputStream sysInBackup = System.in;
+        ByteArrayInputStream in = new ByteArrayInputStream("4".getBytes());
+        System.setIn(in);
+        // Check 4 players are sent through
+        int players = CardGame.UserInputPlayers();
+        assertEquals(4,players);
+
+        // Restore system in
+        System.setIn(sysInBackup);
+    }
+
+    // User inputs valid number of players (lower bound)
+    @Test
+    public void TestValidNumberOfPlayersInputLowerBound()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        // Fake input stream
+        InputStream sysInBackup = System.in;
+        ByteArrayInputStream in = new ByteArrayInputStream("2".getBytes());
+        System.setIn(in);
+        // Check 2 players are sent through
+        int players = CardGame.UserInputPlayers();
+        assertEquals(2,players);
+
+        // Restore system in
+        System.setIn(sysInBackup);
+    }
+
+    // User inputs negative one number of players
+    @Test
+    public void TestNegativeOneNumberOfPlayersInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        assertEquals(-1,CardGame.ValidateNumberOfPlayers("-1"));
+    }
+
+    // User inputs negative number of players
+    @Test
+    public void TestNegativeNumberOfPlayersInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        assertEquals(-1,CardGame.ValidateNumberOfPlayers("-5"));
+    }
+
+    // User inputs 0 players
+    @Test
+    public void TestZeroPlayersInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        assertEquals(-1,CardGame.ValidateNumberOfPlayers("0"));
+    }
+
+    // User inputs 1 player
+    @Test
+    public void TestOnePlayerInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        assertEquals(-1,CardGame.ValidateNumberOfPlayers("1"));
+    }
+
+    // User inputs float
+    @Test
+    public void TestFloatNumberOfPlayerInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        assertEquals(-1,CardGame.ValidateNumberOfPlayers("1.1"));
+    }
+
+    // User inputs char
+    @Test
+    public void TestCharNumberOfPlayerInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        assertEquals(-1,CardGame.ValidateNumberOfPlayers("a"));
+    }
+
+    // User inputs string
+    @Test
+    public void TestStringNumberOfPlayerInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        assertEquals(-1,CardGame.ValidateNumberOfPlayers("aaaa"));
+    }
+
+    // User inputs valid directory
+    @Test
+    public void TestValidDirectoryInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        assert(CardGame.ValidateDirectory("test/testpacks/valid_pack.txt",4));
+    }
+
+    // User inputs directory that does not exist
+    @Test
+    public void TestDirectoryDoesNotExistInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        assert(!CardGame.ValidateDirectory("invalidDirectory.txt",4));
+    }
+
+    // User inputs valid directory but invalid pack
+    @Test
+    public void TestInvalidDirectoryInput()
+            throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
+        assert(!CardGame.ValidateDirectory("test/testpacks/wrong_multiple.txt",4));
     }
 }

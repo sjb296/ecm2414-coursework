@@ -1,8 +1,5 @@
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Player implements Runnable {
@@ -29,10 +26,6 @@ public class Player implements Runnable {
 
     public int getNumber() {
         return number;
-    }
-
-    public String getLog() {
-        return log;
     }
 
     public void appendToLog(String s) {

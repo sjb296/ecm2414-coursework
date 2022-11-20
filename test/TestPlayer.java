@@ -1,11 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import org.junit.Test;
-
-import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class TestPlayer {
     // draw and discard from a non-empty left deck and empty right deck
@@ -164,23 +160,25 @@ public class TestPlayer {
 
     // Starting hand is a win
     @Test
-    public void TestStartWinningHand() throws InterruptedException {
+    public void TestStartWinningHand() throws InterruptedException, IOException {
         Card[] startingHand = {new Card(1), new Card(1), new Card(1), new Card(1)};
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
         Player p1 = new Player(left, right, startingHand, 1);
         Thread p1Thread = new Thread(p1);
         p1Thread.start();
-        // start and instantly see it's won
-        sleep(100);
-        if (p1Thread.isAlive()) {
-            fail("Thread should be killed!");
-        }
+        p1Thread.join();
+        // Output file should have 4 lines as no draw and discards have occurred
+        String contents = OutputFileHelper.readOutputFile("player1");
+        assertEquals("player 1 initial hand 1 1 1 1\n"
+                + "player 1 wins\n"
+                + "player 1 exits\n"
+                + "player 1 final hand 1 1 1 1",contents);
     }
 
     // External win event
     @Test
-    public void TestExternalWinEvent() throws InterruptedException {
+    public void TestExternalWinEvent() throws InterruptedException, IOException {
         Card[] startingHand = {new Card(1), new Card(2), new Card(3), new Card(4)};
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
@@ -195,10 +193,13 @@ public class TestPlayer {
         // Should die without ever drawing or discarding
         Thread p1Thread = new Thread(p1);
         p1Thread.start();
-        sleep(200);
-        if (p1Thread.isAlive()) {
-            fail("Thread should be killed!");
-        }
+        p1Thread.join();
+        // Output file should have 4 lines as no draw and discards have occurred
+        String contents = OutputFileHelper.readOutputFile("player1");
+        assertEquals("player 1 initial hand 1 2 3 4\n"
+                + "player 2 has informed player 1 that player 2 has won\n"
+                + "player 1 exits\n"
+                + "player 1 final hand 1 2 3 4",contents);
     }
 
     @Test

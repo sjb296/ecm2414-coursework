@@ -5,10 +5,6 @@ public class Card {
         return value;
     }
 
-    public void setValue(int value) {
-        this.value = value;
-    }
-
     private static void checkNonNegative(int value) {
         if (value < 0) {
             throw new NumberFormatException("Card value must be non-negative integer!");
