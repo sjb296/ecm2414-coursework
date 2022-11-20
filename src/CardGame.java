@@ -1,11 +1,11 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Scanner;
 
+/**
+ * Sets up and runs the entire game.
+ */
 public class CardGame {
     private int numberOfPlayers;
     private String packFileName;
@@ -29,80 +29,87 @@ public class CardGame {
         return decks;
     }
 
-    // Throw if bad pack
-    public void validatePack(String packFileName)
-            throws InvalidPackException {
-
-    }
-
+    /**
+     * Creates players, decks and threads and distributes cards round-robin to players and decks.
+     *
+     * @throws InvalidPackException
+     * @throws IOException
+     * @throws InvalidNumberOfPlayersException
+     */
     public void setupGame()
             throws InvalidPackException, IOException, InvalidNumberOfPlayersException {
         ArrayList<Card> cards = CardPackReader.readCardPack(this.packFileName, this.numberOfPlayers);
-        // populate players & threads & decks
+        // Create decks
         for (int i=0; i<this.numberOfPlayers; i++) {
             Deck deck = new Deck(this.numberOfPlayers, i+1);
             this.decks.add(deck);
         }
-        // give deck cards
+        // Starting at 4N, distribute cards round-robin to decks
         for (int i=(4*this.numberOfPlayers);i<cards.size();i++) {
             decks.get(i%this.numberOfPlayers).add(cards.get(i));
         }
 
-        // give players decks
+        // Create players assigning their decks and hands
         for (int i=0;i<(this.numberOfPlayers-1);i++) {
             int rightDeckNumber = i + 1;
+            // Hand distributed round-robin
             Card[] hand = new Card[]{
                     cards.get(i),
                     cards.get(i+this.numberOfPlayers),
                     cards.get(i+(2*this.numberOfPlayers)),
                     cards.get(i+(3*this.numberOfPlayers)),
             };
+            // Creates players
             this.players.add(new Player(this.decks.get(i),
                                         this.decks.get(rightDeckNumber),
                                         hand,
                                         i+1));
         }
-        // do the last player manually
+        // Decks and cards of the last player assigned outside of loop
         Card[] hand = new Card[]{
                 cards.get(this.numberOfPlayers-1),
                 cards.get((2*this.numberOfPlayers)-1),
                 cards.get((3*this.numberOfPlayers)-1),
                 cards.get((4*this.numberOfPlayers)-1),
         };
-        Player lastPlayer =new Player(
+        // The last players right deck is the first deck
+        Player lastPlayer = new Player(
                 this.decks.get(this.numberOfPlayers-1),
                 this.decks.get(0),
                 hand,
                 this.numberOfPlayers);
         this.players.add(lastPlayer);
 
-        // give each player all the other players for their list
+        // Give each player all the other players for their list
         for (int i=0;i<this.numberOfPlayers;i++) {
             Player currentPlayer = this.players.get(i);
             this.players.remove(currentPlayer);
 
-            // now this player is gone add the others to his list
+            // Now this player is gone add the others to his list
             currentPlayer.setOtherPlayers(this.players);
 
-            // put him back for the others
+            // Put him back for the others
             this.players.add(i, currentPlayer);
         }
 
-        // make threads & put in list
+        // Make threads & put in Array-list
         for (Player player : this.players) {
             this.playerThreads.add(new Thread(player));
         }
     }
 
+    /**
+     * Starts all the threads so the game can be played.
+     */
     public void playGame() {
-        // start all the players
+        // Start all the players
         for (Thread thread : this.playerThreads) {
             thread.start();
         }
     }
 
     public CardGame(int numberOfPlayers, String packFileName)
-            throws InvalidNumberOfPlayersException, InvalidPackException {
+            throws InvalidNumberOfPlayersException {
         if (numberOfPlayers > 1) {
             this.numberOfPlayers = numberOfPlayers;
         } else {
@@ -114,7 +121,12 @@ public class CardGame {
         this.packFileName = packFileName;
     }
 
-    // Validates the number of players is 2 or more and integer
+    /**
+     * Validates the number of players is 2 or more and integer
+     *
+     * @param playersAsString
+     * @return players or -1
+     */
     public static int ValidateNumberOfPlayers(String playersAsString){
         try {
             int players = Integer.parseInt(playersAsString);
@@ -127,7 +139,13 @@ public class CardGame {
         return -1;
     }
 
-    // Validates the directory
+    /**
+     * Validates the directory
+     *
+     * @param directory
+     * @param players
+     * @return valid directory
+     */
     public static boolean ValidateDirectory(String directory, int players){
         if (directory != null) {
             try {
@@ -140,7 +158,12 @@ public class CardGame {
         return false;
     }
 
-    // Input verification loop for number of players
+    /**
+     * Loops through taking user input on number of players until its valid.
+     *
+     * @return players
+     * @throws IOException
+     */
     public static int UserInputPlayers() throws IOException {
         int players = -1;
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -153,7 +176,13 @@ public class CardGame {
         return players;
     }
 
-    // Input verification for directory
+    /**
+     * Loops through taking user input on number of players until its valid.
+     *
+     * @param players
+     * @return directory
+     * @throws IOException
+     */
     public static String UserInputDirectory(int players) throws IOException {
         String directory = "";
         boolean validDirectory = false;
@@ -164,15 +193,5 @@ public class CardGame {
             validDirectory = ValidateDirectory(directory,players);
         }
         return directory;
-    }
-
-    // Main
-    public static void main(String[] args)
-            throws IOException, InvalidPackException, InvalidNumberOfPlayersException {
-        int players = CardGame.UserInputPlayers();
-        String directory = CardGame.UserInputDirectory(players);
-        CardGame cardGame = new CardGame(players, directory);
-        cardGame.setupGame();
-        cardGame.playGame();
     }
 }
