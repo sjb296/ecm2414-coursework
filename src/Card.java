@@ -6,12 +6,12 @@ public class Card {
     }
 
     /**
-     * Checks card value is a positive integer
+     * Checks card value is a positive integer.
      *
-     * @param value
+     * @param value of the card.
      * @throws NumberFormatException
      */
-    private static void checkNonNegative(int value) {
+    private static void checkNonNegative(final int value) {
         if (value < 0) {
             throw new NumberFormatException("Card value must be non-negative integer!");
         }
@@ -20,11 +20,11 @@ public class Card {
     /**
      * Constructor.
      *
-     * @param value
+     * @param cardValue of the card.
      */
-    public Card(int value) {
-        Card.checkNonNegative(value);
-        this.value = value;
+    public Card(final int cardValue) {
+        Card.checkNonNegative(cardValue);
+        this.value = cardValue;
     }
 
     public String toString() {

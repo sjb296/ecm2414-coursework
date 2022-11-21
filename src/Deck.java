@@ -17,6 +17,7 @@ public class Deck {
         // Creates an empty queue of cards
         this.number = number;
         int amountOfCards = 8 * players;
+        // The queue's capacity is (total amount of cards - all the players' hands)
         cardQueue = new ArrayBlockingQueue<Card>(amountOfCards - (players * 4));
     }
 
@@ -37,7 +38,7 @@ public class Deck {
     }
 
     /**
-     * Writes output file.
+     * Creates the contents for its output file and then writes one.
      *
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
