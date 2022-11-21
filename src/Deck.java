@@ -33,10 +33,6 @@ public class Deck {
         return cardQueue.poll();
     }
 
-    public String toString() {
-        return "Deck " + this.number;
-    }
-
     /**
      * Creates the contents for its output file and then writes one.
      *
@@ -44,7 +40,7 @@ public class Deck {
      * @throws UnsupportedEncodingException
      */
     public void writeToFile() throws FileNotFoundException, UnsupportedEncodingException {
-        String output = "deck" + number + " contents: " + cardQueue.toString()
+        String output = "deck" + this.number + " contents: " + cardQueue.toString()
                 .replace("[", "")
                 .replace("]", "").replace(",", "");
 
