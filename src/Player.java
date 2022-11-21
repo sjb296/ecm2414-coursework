@@ -75,9 +75,9 @@ public class Player implements Runnable {
         this.rightDeck = playerRightDeck;
         this.hand = playerHand;
         this.number = playerNumber;
-        this.log = "player " + this.number + " initial hand " + playerHand[0].getValue() + " " +
-                playerHand[1].getValue() + " " + playerHand[2].getValue() + " " +
-                playerHand[3].getValue() + "\n";
+        this.log = "player " + this.number + " initial hand " + playerHand[0].getValue() + " "
+                + playerHand[1].getValue() + " " + playerHand[2].getValue() + " "
+                + playerHand[3].getValue() + "\n";
     }
 
     /**
