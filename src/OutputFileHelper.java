@@ -1,4 +1,9 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Helper class for writing to output files.
@@ -12,7 +17,7 @@ public class OutputFileHelper {
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
-    public static void writeOutputFile(String objectName, String output)
+    public static void writeOutputFile(final String objectName, final String output)
             throws FileNotFoundException, UnsupportedEncodingException {
         String filename = objectName + "_output.txt";
         PrintWriter out = new PrintWriter(filename, "UTF-8");
@@ -27,7 +32,7 @@ public class OutputFileHelper {
      * @return The contents of the file.
      * @throws IOException
      */
-    public static String readOutputFile(String objectName) throws IOException {
+    public static String readOutputFile(final String objectName) throws IOException {
         String filename = objectName + "_output.txt";
         BufferedReader br = new BufferedReader(new FileReader(filename));
         // Converts the contents of the file into a string

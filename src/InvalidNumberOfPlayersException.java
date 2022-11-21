@@ -1,5 +1,5 @@
 public class InvalidNumberOfPlayersException extends Throwable {
-    public InvalidNumberOfPlayersException(String message) {
+    public InvalidNumberOfPlayersException(final String message) {
         super(message);
     }
 }

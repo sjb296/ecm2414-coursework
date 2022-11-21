@@ -1,5 +1,5 @@
 public class InvalidPackException extends Throwable {
-    public InvalidPackException(String s) {
+    public InvalidPackException(final String s) {
         super(s);
     }
 }

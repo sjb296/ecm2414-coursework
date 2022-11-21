@@ -4,18 +4,18 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class Deck {
 
-    ArrayBlockingQueue<Card> cardQueue;
-    int number;
+    private ArrayBlockingQueue<Card> cardQueue;
+    private int number;
 
     /**
      * Constructor.
      *
      * @param players
-     * @param number
+     * @param deckNumber
      */
-    public Deck(int players, int number) {
+    public Deck(final int players, final int deckNumber) {
         // Creates an empty queue of cards
-        this.number = number;
+        this.number = deckNumber;
         int amountOfCards = 8 * players;
         // The queue's capacity is (total amount of cards - all the players' hands)
         cardQueue = new ArrayBlockingQueue<Card>(amountOfCards - (players * 4));
@@ -25,7 +25,7 @@ public class Deck {
         return number;
     }
 
-    public void add(Card card) {
+    public void add(final Card card) {
         cardQueue.add(card);
     }
 

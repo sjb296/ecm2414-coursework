@@ -9,11 +9,12 @@ public class CardPackReader {
      * Reads a card pack from a file, creates cards and returns them in an ArrayList.
      *
      * @param filename The name of the pack file.
+     * @param players The number of players in the game.
      * @return An ArrayList of Cards.
      * @throws IOException
      * @throws FileNotFoundException
      */
-    public static ArrayList<Card> readCardPack(String filename, int players)
+    public static ArrayList<Card> readCardPack(final String filename, final int players)
             throws IOException, FileNotFoundException, InvalidPackException,
             InvalidNumberOfPlayersException {
         // Check number of players is 2 or more

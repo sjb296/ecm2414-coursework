@@ -57,24 +57,27 @@ public class Player implements Runnable {
         return this.victory;
     }
 
-    public void setOtherPlayers(ArrayList<Player> otherPlayers) {
-        this.otherPlayers = otherPlayers;
+    public void setOtherPlayers(final ArrayList<Player> players) {
+        this.otherPlayers = players;
     }
 
     /**
      * Constructor.
      *
-     * @param leftDeck
-     * @param rightDeck
-     * @param hand
-     * @param number
+     * @param playerLeftDeck
+     * @param playerRightDeck
+     * @param playerHand
+     * @param playerNumber
      */
-    public Player(Deck leftDeck, Deck rightDeck, Card[] hand, int number) {
-        this.leftDeck = leftDeck;
-        this.rightDeck = rightDeck;
-        this.hand = hand;
-        this.number = number;
-        this.log = "player " + this.number + " initial hand " + hand[0].getValue() + " " + hand[1].getValue() + " " + hand[2].getValue() + " " + hand[3].getValue() + "\n";
+    public Player(final Deck playerLeftDeck, final Deck playerRightDeck, final Card[] playerHand,
+            final int playerNumber) {
+        this.leftDeck = playerLeftDeck;
+        this.rightDeck = playerRightDeck;
+        this.hand = playerHand;
+        this.number = playerNumber;
+        this.log = "player " + this.number + " initial hand " + playerHand[0].getValue() + " " +
+                playerHand[1].getValue() + " " + playerHand[2].getValue() + " " +
+                playerHand[3].getValue() + "\n";
     }
 
     /**
@@ -97,14 +100,14 @@ public class Player implements Runnable {
             pickedCard = leftDeck.poll();
             Card selectedCard = hand[discardIndex];
             // If the picked card is non preferred it will be discarded to the right deck
-            for (int i=0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 selectedCard = this.hand[discardIndex];
                 if (selectedCard.getValue() == this.number) {
                     discardIndex++;
                     if (discardIndex > 3) {
                         discardIndex = 0;
                     }
-                }else {
+                } else {
                     rightDeck.add(selectedCard);
                     this.hand[discardIndex] = pickedCard;
                     break;
@@ -141,9 +144,9 @@ public class Player implements Runnable {
      */
     public boolean checkSelfHasWon() {
         // If all values in the hand are the same, the player wins the game
-        if (this.hand[0].getValue() == this.hand[1].getValue() &&
-                this.hand[1].getValue() == this.hand[2].getValue() &&
-                this.hand[2].getValue() == this.hand[3].getValue()) {
+        if (this.hand[0].getValue() == this.hand[1].getValue()
+                && this.hand[1].getValue() == this.hand[2].getValue()
+                && this.hand[2].getValue() == this.hand[3].getValue()) {
             this.win();
             return true;
         } else {

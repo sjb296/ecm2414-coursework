@@ -9,7 +9,7 @@ public class Main {
      * @throws InvalidPackException
      * @throws InvalidNumberOfPlayersException
      */
-    public static void main(String[] args)
+    public static void main(final String[] args)
             throws IOException, InvalidPackException, InvalidNumberOfPlayersException {
         int players = CardGame.UserInputPlayers();
         String directory = CardGame.UserInputDirectory(players);
