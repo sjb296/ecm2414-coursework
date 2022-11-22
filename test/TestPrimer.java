@@ -7,7 +7,8 @@ import org.junit.runners.Suite;
         TestCardPackReader.class,
         TestDeck.class,
         TestOutputFileHelper.class,
-        TestPlayer.class
+        TestPlayer.class,
+        TestWinHandler.class
 })
 public class TestPrimer {
 }
