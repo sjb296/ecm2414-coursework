@@ -446,8 +446,7 @@ public class TestCardGame {
 
         // Checks a player has won
         boolean someoneHasWon = false;
-        for (int i=1; i<9; i++){
-            Player player = cardGame.getPlayers().get(i);
+        for (Player player : cardGame.getPlayers()) {
             if(player.hasWon()){
                 return;
             }
