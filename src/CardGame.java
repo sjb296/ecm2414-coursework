@@ -14,6 +14,10 @@ public class CardGame {
     private final ArrayList<Deck> decks;
     private final WinHandler winHandler;
 
+    public WinHandler getWinHandler() {
+        return winHandler;
+    }
+
     public int getNumberOfPlayers() {
         return this.numberOfPlayers;
     }

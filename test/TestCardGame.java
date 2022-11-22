@@ -388,7 +388,7 @@ public class TestCardGame {
         for (Thread thread : cardGame.getPlayerThreads()) {
             thread.join();
         }
-        assert(cardGame.getPlayers().get(0).hasWon());
+        assertEquals(1, cardGame.getWinHandler().getWinner());
     }
 
     // Player replaces entire hand
