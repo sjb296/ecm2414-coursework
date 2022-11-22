@@ -12,6 +12,7 @@ public class CardGame {
     private ArrayList<Player> players;
     private ArrayList<Thread> playerThreads;
     private ArrayList<Deck> decks;
+    private WinHandler winHandler;
 
     public int getNumberOfPlayers() {
         return this.numberOfPlayers;
@@ -63,7 +64,7 @@ public class CardGame {
             this.players.add(new Player(this.decks.get(i),
                                         this.decks.get(rightDeckNumber),
                                         hand,
-                                        i + 1));
+                                        i + 1, this.winHandler));
         }
         // Decks and cards of the last player assigned outside of loop
         Card[] hand = new Card[]{
@@ -77,20 +78,8 @@ public class CardGame {
                 this.decks.get(this.numberOfPlayers - 1),
                 this.decks.get(0),
                 hand,
-                this.numberOfPlayers);
+                this.numberOfPlayers, this.winHandler);
         this.players.add(lastPlayer);
-
-        // Give each player all the other players for their list
-        for (int i = 0; i < this.numberOfPlayers; i++) {
-            Player currentPlayer = this.players.get(i);
-            this.players.remove(currentPlayer);
-
-            // Now this player is gone add the others to his list
-            currentPlayer.setOtherPlayers(this.players);
-
-            // Put him back for the others
-            this.players.add(i, currentPlayer);
-        }
 
         // Make threads & put in Array-list
         for (Player player : this.players) {
@@ -126,6 +115,7 @@ public class CardGame {
         this.playerThreads = new ArrayList<Thread>();
         this.decks = new ArrayList<Deck>();
         this.packDirectory = packFileDirectory;
+        this.winHandler = new WinHandler();
     }
 
     /**

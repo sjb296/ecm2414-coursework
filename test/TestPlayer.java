@@ -12,7 +12,7 @@ public class TestPlayer {
         left.add(new Card(1));
         Deck right = new Deck(1, 2);
         Card[] startingHand = {new Card(2), new Card(2), new Card(2), new Card(2)};
-        Player p1 = new Player(left, right, startingHand, 1);
+        Player p1 = new Player(left, right, startingHand, 1, new WinHandler());
         // draw & discard
         p1.drawDiscard();
 
@@ -29,7 +29,7 @@ public class TestPlayer {
         left.add(new Card(3));
         Deck right = new Deck(1, 2);
         Card[] startingHand = {new Card(2), new Card(2), new Card(2), new Card(2)};
-        Player p1 = new Player(left, right, startingHand, 1);
+        Player p1 = new Player(left, right, startingHand, 1, new WinHandler());
         // draw & discard
         p1.drawDiscard();
 
@@ -46,7 +46,7 @@ public class TestPlayer {
         left.add(new Card(7));
         Deck right = new Deck(1, 2);
         Card[] startingHand = {new Card(2), new Card(3), new Card(4), new Card(5)};
-        Player p1 = new Player(left, right, startingHand, 1);
+        Player p1 = new Player(left, right, startingHand, 1, new WinHandler());
         // draw & discard twice
         p1.drawDiscard();
         p1.drawDiscard();
@@ -75,7 +75,7 @@ public class TestPlayer {
                 new Card(9),
                 new Card(10)
         };
-        Player p1 = new Player(left, right, startingHand, 1);
+        Player p1 = new Player(left, right, startingHand, 1, new WinHandler());
         // draw & discard five times to loop over
         p1.drawDiscard();
         p1.drawDiscard();
@@ -102,7 +102,7 @@ public class TestPlayer {
         Deck left = new Deck(1, 1);
         Deck right = new Deck(1, 2);
         Card[] startingHand = {new Card(2), new Card(2), new Card(2), new Card(2)};
-        Player p1 = new Player(left, right, startingHand, 1);
+        Player p1 = new Player(left, right, startingHand, 1, new WinHandler());
         // draw & discard
         p1.drawDiscard();
 
@@ -123,7 +123,7 @@ public class TestPlayer {
         right.add(new Card(2));
         right.add(new Card(3));
         right.add(new Card(4));
-        Player p1 = new Player(left, right, startingHand, 1);
+        Player p1 = new Player(left, right, startingHand, 1, new WinHandler());
         // draw & discard
         try {
             p1.drawDiscard();
@@ -144,7 +144,7 @@ public class TestPlayer {
         left.add(new Card(4));
         left.add(new Card(5));
         left.add(new Card(6));
-        Player p1 = new Player(left, right, startingHand, 1);
+        Player p1 = new Player(left, right, startingHand, 1, new WinHandler());
         // draw and discard
         for (int i = 0; i < 4; i++) {
             p1.drawDiscard();
@@ -164,7 +164,7 @@ public class TestPlayer {
         Card[] startingHand = {new Card(1), new Card(1), new Card(1), new Card(1)};
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
-        Player p1 = new Player(left, right, startingHand, 1);
+        Player p1 = new Player(left, right, startingHand, 1, new WinHandler());
         Thread p1Thread = new Thread(p1);
         p1Thread.start();
         p1Thread.join();
@@ -182,8 +182,9 @@ public class TestPlayer {
         Card[] startingHand = {new Card(1), new Card(2), new Card(3), new Card(4)};
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
-        Player p1 = new Player(left, right, startingHand, 1);
-        Player p2 = new Player(null, null, new Card[]{new Card(0), new Card(0), new Card(0), new Card(0)}, 2);
+        WinHandler winHandler = new WinHandler();
+        Player p1 = new Player(left, right, startingHand, 1, winHandler);
+        Player p2 = new Player(null, null, new Card[]{new Card(0), new Card(0), new Card(0), new Card(0)}, 2, winHandler);
 
         ArrayList<Player> otherPlayers = new ArrayList<>();
         otherPlayers.add(p2);
@@ -208,7 +209,7 @@ public class TestPlayer {
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
 
-        Player p1 = new Player(left, right, startingHand, 1);
+        Player p1 = new Player(left, right, startingHand, 1, new WinHandler());
         Thread p1Thread = new Thread(p1);
         p1Thread.start();
         p1Thread.join();
@@ -222,8 +223,10 @@ public class TestPlayer {
         Card[] startingHand = {new Card(1), new Card(2), new Card(3), new Card(4)};
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
-        Player p1 = new Player(left, right, startingHand, 1);
-        Player p2 = new Player(null, null, new Card[]{new Card(0), new Card(0), new Card(0), new Card(0)}, 2);
+        WinHandler winHandler = new WinHandler();
+        Player p1 = new Player(left, right, startingHand, 1, winHandler);
+        Player p2 = new Player(null, null, new Card[]{new Card(0),
+                new Card(0), new Card(0), new Card(0)}, 2, winHandler);
 
         ArrayList<Player> otherPlayers = new ArrayList<>();
         otherPlayers.add(p2);
@@ -250,7 +253,7 @@ public class TestPlayer {
         Deck right = new Deck(1, 2);
         Deck left = new Deck(1, 1);
         left.add(new Card(1));
-        Player p1 = new Player(left, right, startingHand, 1);
+        Player p1 = new Player(left, right, startingHand, 1, new WinHandler());
         Thread p1Thread = new Thread(p1);
         p1Thread.start();
         p1Thread.join();

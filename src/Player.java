@@ -14,6 +14,7 @@ public class Player implements Runnable {
     private boolean victory = false;
     private String log = "";
     private ArrayList<Player> otherPlayers = new ArrayList<>();
+    private WinHandler winHandler;
 
     public Deck getLeftDeck() {
         return leftDeck;
@@ -44,8 +45,8 @@ public class Player implements Runnable {
      * Sets its own victory condition to true and prints to screen it has won.
      */
     public void win() {
-        this.victory = true;
-        System.out.println("player " + number + " wins");
+        this.winHandler.winner(this.number);
+        System.out.println("player " + this.number + " wins");
     }
 
     /**
@@ -54,7 +55,7 @@ public class Player implements Runnable {
      * @return True if the player has won.
      */
     public boolean hasWon() {
-        return this.victory;
+        return this.number == this.winHandler.getWinner();
     }
 
     public void setOtherPlayers(final ArrayList<Player> players) {
@@ -70,11 +71,12 @@ public class Player implements Runnable {
      * @param playerNumber
      */
     public Player(final Deck playerLeftDeck, final Deck playerRightDeck, final Card[] playerHand,
-            final int playerNumber) {
+            final int playerNumber, final WinHandler playerWinHandler) {
         this.leftDeck = playerLeftDeck;
         this.rightDeck = playerRightDeck;
         this.hand = playerHand;
         this.number = playerNumber;
+        this.winHandler = playerWinHandler;
         this.log = "player " + this.number + " initial hand " + playerHand[0].getValue() + " "
                 + playerHand[1].getValue() + " " + playerHand[2].getValue() + " "
                 + playerHand[3].getValue() + "\n";
@@ -129,12 +131,7 @@ public class Player implements Runnable {
      * @return winning players number or -1 if no one has won.
      */
     public int checkSomeoneElseHasWon() {
-        for (Player player : this.otherPlayers) {
-            if (player.hasWon()) {
-                return player.getNumber();
-            }
-        }
-        return -1;
+        return this.winHandler.getWinner();
     }
 
     /**
