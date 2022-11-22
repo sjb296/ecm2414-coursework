@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
@@ -6,15 +7,15 @@ import java.util.ArrayList;
  * The functionalities the player needs to play the game that is run on a thread.
  */
 public class Player implements Runnable {
-    private Deck leftDeck;
-    private Deck rightDeck;
-    private Card[] hand;    // 4 cards
-    private int number;
+    private final Deck leftDeck;
+    private final Deck rightDeck;
+    private final Card[] hand;    // 4 cards
+    private final int number;
     private int discardIndex = 0;
-    private boolean victory = false;
+    private final boolean victory = false;
     private String log = "";
     private ArrayList<Player> otherPlayers = new ArrayList<>();
-    private WinHandler winHandler;
+    private final WinHandler winHandler;
 
     public Deck getLeftDeck() {
         return leftDeck;
@@ -88,7 +89,7 @@ public class Player implements Runnable {
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
-    public void writeOutputFile() throws FileNotFoundException, UnsupportedEncodingException {
+    public void writeOutputFile() throws IOException {
         OutputFileHelper.writeOutputFile("player" + number, log);
         this.leftDeck.writeToFile();
     }
@@ -168,7 +169,7 @@ public class Player implements Runnable {
                 this.appendToLog("player " + this.number + " final hand " + this.hand[0] + " " + this.hand[1] + " " + this.hand[2] + " " + this.hand[3] + "\n");
                 try {
                     this.writeOutputFile();
-                } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 return;
@@ -182,7 +183,7 @@ public class Player implements Runnable {
                 this.appendToLog("player " + this.number + " final hand " + this.hand[0] + " " + this.hand[1] + " " + this.hand[2] + " " + this.hand[3] + "\n");
                 try {
                     this.writeOutputFile();
-                } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 return;

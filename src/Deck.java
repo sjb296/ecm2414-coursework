@@ -1,11 +1,12 @@
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Deck {
 
-    private ArrayBlockingQueue<Card> cardQueue;
-    private int number;
+    private final ArrayBlockingQueue<Card> cardQueue;
+    private final int number;
 
     /**
      * Constructor.
@@ -39,7 +40,7 @@ public class Deck {
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
-    public void writeToFile() throws FileNotFoundException, UnsupportedEncodingException {
+    public void writeToFile() throws IOException {
         String output = "deck" + this.number + " contents: " + cardQueue.toString()
                 .replace("[", "")
                 .replace("]", "").replace(",", "");

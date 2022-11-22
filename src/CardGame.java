@@ -7,12 +7,12 @@ import java.util.ArrayList;
  * Sets up and runs the entire game.
  */
 public class CardGame {
-    private int numberOfPlayers;
-    private String packDirectory;
-    private ArrayList<Player> players;
-    private ArrayList<Thread> playerThreads;
-    private ArrayList<Deck> decks;
-    private WinHandler winHandler;
+    private final int numberOfPlayers;
+    private final String packDirectory;
+    private final ArrayList<Player> players;
+    private final ArrayList<Thread> playerThreads;
+    private final ArrayList<Deck> decks;
+    private final WinHandler winHandler;
 
     public int getNumberOfPlayers() {
         return this.numberOfPlayers;

@@ -1,5 +1,5 @@
 public class Card {
-    private int value;
+    private final int value;
 
     public int getValue() {
         return value;

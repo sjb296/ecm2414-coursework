@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Helper class for writing to output files.
@@ -18,9 +19,9 @@ public class OutputFileHelper {
      * @throws UnsupportedEncodingException
      */
     public static void writeOutputFile(final String objectName, final String output)
-            throws FileNotFoundException, UnsupportedEncodingException {
+            throws IOException {
         String filename = objectName + "_output.txt";
-        PrintWriter out = new PrintWriter(filename, "UTF-8");
+        PrintWriter out = new PrintWriter(filename, StandardCharsets.UTF_8);
         out.print(output);
         out.close();
     }

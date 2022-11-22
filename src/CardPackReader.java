@@ -23,7 +23,7 @@ public class CardPackReader {
         }
 
         // Ensures filetype is .txt
-        if (!filename.substring(filename.length() - 4).equals(".txt")) {
+        if (!filename.endsWith(".txt")) {
             throw new InvalidPackException("Filetype must be .txt");
         }
         File file = new File(filename);
