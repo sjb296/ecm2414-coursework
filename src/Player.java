@@ -90,6 +90,7 @@ public class Player implements Runnable {
      */
     public void writeOutputFile() throws FileNotFoundException, UnsupportedEncodingException {
         OutputFileHelper.writeOutputFile("player" + number, log);
+        this.leftDeck.writeToFile();
     }
 
     /**
